@@ -1,10 +1,10 @@
 resource "aws_db_instance" "postgres" {
   identifier         = "fastapi-postgres-db"
   engine             = "postgres"
-  engine_version     = "15.3"
+  engine_version     = "17.4"
   instance_class     = "db.t3.micro"
   username           = "postgres"
-  password           = var.db_password
+  password           = "password"
   allocated_storage  = 20
   skip_final_snapshot = true
   publicly_accessible = true

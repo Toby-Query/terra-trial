@@ -1,20 +1,20 @@
 resource "aws_instance" "fastapi_ec2" {
-  ami           = "ami-0c02fb55956c7d316" # Amazon Linux 2
-  instance_type = "t2.micro"
-  key_name      = var.key_name
+  ami           = "ami-0e188abe6701c3453" # Amazon Linux 2
+  instance_type = "t3.micro"
+  key_name      = "ec2-key"
 
   vpc_security_group_ids = [aws_security_group.ec2_sg.id]
 
-  user_data = <<-EOF
-              #!/bin/bash
-              yum update -y
-              yum install git python3 -y
-              pip3 install fastapi uvicorn
-              cd /home/ec2-user
-              git clone https://github.com/YOUR_USERNAME/YOUR_REPO.git
-              cd YOUR_REPO
-              nohup uvicorn main:app --host 0.0.0.0 --port 80 &
-              EOF
+  # user_data = <<-EOF
+  #             #!/bin/bash
+  #             yum update -y
+  #             yum install git python3 -y
+  #             pip3 install fastapi uvicorn
+  #             cd /home/ec2-user
+  #             git clone https://github.com/YOUR_USERNAME/YOUR_REPO.git
+  #             cd YOUR_REPO
+  #             nohup uvicorn main:app --host 0.0.0.0 --port 80 &
+  #             EOF
 
   tags = {
     Name = "FastAPI Server"
@@ -30,6 +30,14 @@ resource "aws_security_group" "ec2_sg" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"] # Restrict this to your IP for better security
+  }
+
   egress {
     from_port   = 0
     to_port     = 0
